@@ -1,0 +1,45 @@
+{
+  "name": "@apocentre/bc-ur",
+  "version": "1.0.0",
+  "author": "Antonis Poulakis <antwnic4@gmail.com>",
+  "description": "A JS implementation of the Uniform Resources (UR) specification from Blockchain Commons",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "directories": {
+    "lib": "src",
+    "test": "tests"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "build": "yarn clean && yarn compile",
+    "start": "node ./dist/test/index.js",
+    "compile": "tsc -p tsconfig.json -outDir ./dist",
+    "test": "jest ",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
+  },
+  "dependencies": {
+    "@types/buffer-xor": "^2.0.0",
+    "@types/crc": "^3.4.0",
+    "@types/sha.js": "^2.4.0",
+    "@apocentre/alias-sampling": "^0.5.2",
+    "assert": "^2.0.0",
+    "bignumber.js": "^9.0.1",
+    "buffer-xor": "^2.0.2",
+    "cbor": "^7.0.0",
+    "crc": "^3.8.0",
+    "sha.js": "^2.4.11",
+    "@apocentre/xoshiro": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.25",
+    "jest": "^26.6.3",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.1",
+    "typescript": "^4.1.5"
+  }
+}
