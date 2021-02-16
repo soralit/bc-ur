@@ -17,6 +17,13 @@ export default class UREncoder {
   }
 
   public get fragmentsLength() { return this.fountainEncoder.fragmentsLength; }
+  public get fragments() { return this.fountainEncoder.fragments; }
+  public get messageLength() { return this.fountainEncoder.messageLength; }
+  public get cbor() { return this.ur.cbor; }
+
+  public encodeWhole(): string[] {
+    return [...new Array(this.fragmentsLength)].map(() => this.nextPart())
+  }
 
   public nextPart(): string {
     const part = this.fountainEncoder.nextPart();

@@ -60,8 +60,8 @@ export class FountainEncoderPart {
 }
 
 export default class FountainEncoder {
-  private messageLength: number;
-  private fragments: Buffer[];
+  private _messageLength: number;
+  private _fragments: Buffer[];
   private fragmentLength: number;
   private seqNum: number;
   private checksum: number;
@@ -74,30 +74,32 @@ export default class FountainEncoder {
   ) {
     const fragmentLength = FountainEncoder.findNominalFragmentLength(message.length, minFragmentLength, maxFragmentLength);
 
-    this.messageLength = message.length;
-    this.fragments = FountainEncoder.partitionMessage(message, fragmentLength);
+    this._messageLength = message.length;
+    this._fragments = FountainEncoder.partitionMessage(message, fragmentLength);
     this.fragmentLength = fragmentLength;
     this.seqNum = toUint32(firstSeqNum);
     this.checksum = getCRC(message)
   }
 
-  public get fragmentsLength() { return this.fragments.length; }
+  public get fragmentsLength() { return this._fragments.length; }
+  public get fragments() { return this._fragments; }
+  public get messageLength() { return this._messageLength; }
 
   public isComplete(): boolean {
-    return this.seqNum >= this.fragments.length;
+    return this.seqNum >= this._fragments.length;
   }
 
   public isSinglePart(): boolean {
-    return this.fragments.length === 1;
+    return this._fragments.length === 1;
   }
 
   public seqLength(): number {
-    return this.fragments.length;
+    return this._fragments.length;
   }
 
   public mix(indexes: number[]) {
     return indexes.reduce(
-      (result, index) => bufferXOR(this.fragments[index], result),
+      (result, index) => bufferXOR(this._fragments[index], result),
       Buffer.alloc(this.fragmentLength, 0)
     )
   }
@@ -105,13 +107,13 @@ export default class FountainEncoder {
   public nextPart(): FountainEncoderPart {
     this.seqNum = toUint32(this.seqNum + 1);
 
-    const indexes = chooseFragments(this.seqNum, this.fragments.length, this.checksum);
+    const indexes = chooseFragments(this.seqNum, this._fragments.length, this.checksum);
     const mixed = this.mix(indexes);
 
     return new FountainEncoderPart(
       this.seqNum,
-      this.fragments.length,
-      this.messageLength,
+      this._fragments.length,
+      this._messageLength,
       this.checksum,
       mixed
     )
@@ -143,17 +145,17 @@ export default class FountainEncoder {
   public static partitionMessage(message: Buffer, fragmentLength: number): Buffer[] {
     let remaining = Buffer.from(message);
     let fragment;
-    let fragments: Buffer[] = [];
+    let _fragments: Buffer[] = [];
 
     while (remaining.length > 0) {
       [fragment, remaining] = split(remaining, -fragmentLength)
       fragment = Buffer
         .alloc(fragmentLength, 0) // initialize with 0's to achieve the padding
         .fill(fragment, 0, fragment.length)
-      fragments.push(fragment)
+      _fragments.push(fragment)
     }
 
-    return fragments;
+    return _fragments;
   }
 }
 
