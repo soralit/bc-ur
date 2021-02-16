@@ -11,7 +11,10 @@ describe('UR', () => {
     expect(encoded).toBe(expected);
 
     const decoded = URDecoder.decode(encoded);
+
+    expect(decoded.equals(message)).toBe(true);
   });
+
   test('encode/decode multi part ur', () => {
     const message = makeMessageUR(32767);
     const maxFragmentLength = 1000;

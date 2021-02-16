@@ -11,7 +11,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "preLaunchTask": "npm: build - bc-ur",
+      "preLaunchTask": "npm: build",
       "program": "${workspaceFolder}/src/deleteme.ts",
       "console": "internalConsole",
       "outputCapture": "std",

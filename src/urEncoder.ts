@@ -1,6 +1,6 @@
 import FountainEncoder, { FountainEncoderPart } from './fountainEncoder';
 import bytewords from './bytewords';
-import { UR } from './ur';
+import UR from './ur';
 
 export default class UREncoder {
   private ur: UR;
@@ -16,9 +16,7 @@ export default class UREncoder {
     this.fountainEncoder = new FountainEncoder(_ur.cbor, maxFragmentLength, firstSeqNum, minFragmentLength);
   }
 
-  public encodeWhole(parts: number): string[] {
-    return [...new Array(parts)].map(() => this.nextPart())
-  }
+  public get fragmentsLength() { return this.fountainEncoder.fragmentsLength; }
 
   public nextPart(): string {
     const part = this.fountainEncoder.nextPart();

@@ -1,4 +1,4 @@
-import { getCRC, getCRCHex } from "../src/utils";
+import { getCRCHex } from "../src/utils";
 
 describe('CRC32', () => {
   test('crc32 results', () => {

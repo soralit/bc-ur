@@ -1,8 +1,7 @@
 import assert from "assert";
-import cbor from 'cbor';
-import xor from 'buffer-xor';
-import { getCRC, split } from "./utils";
+import { bufferXOR, getCRC, split, toUint32 } from "./utils";
 import { chooseFragments } from "./fountainUtils";
+import { cborEncode, cborDecode } from './cbor';
 
 export class FountainEncoderPart {
   constructor(
@@ -20,7 +19,7 @@ export class FountainEncoderPart {
   get checksum() { return this._checksum; }
 
   public cbor(): Buffer {
-    const result = cbor.encode([
+    const result = cborEncode([
       this._seqNum,
       this._seqLength,
       this._messageLength,
@@ -28,34 +27,34 @@ export class FountainEncoderPart {
       this._fragment
     ])
 
-    return result;
+    return Buffer.from(result);
   }
 
   public description(): string {
     return `seqNum:${this._seqNum}, seqLen:${this._seqLength}, messageLen:${this._messageLength}, checksum:${this._checksum}, data:${this._fragment.toString('hex')}`
   }
 
-  public static fromCBOR(cborPayload: string | Buffer) {
+  public static fromCBOR(cborPayload: string) {
     const [
       seqNum,
       seqLength,
       messageLength,
       checksum,
       fragment,
-    ] = cbor.decode(cborPayload);
+    ] = cborDecode(cborPayload);
 
     assert(typeof seqNum === 'number');
     assert(typeof seqLength === 'number');
     assert(typeof messageLength === 'number');
     assert(typeof checksum === 'number');
-    assert(Buffer.isBuffer(fragment));
+    assert(Buffer.isBuffer(fragment) && fragment.length > 0);
 
     return new FountainEncoderPart(
       seqNum,
       seqLength,
       messageLength,
       checksum,
-      fragment,
+      Buffer.from(fragment),
     )
   }
 }
@@ -78,9 +77,11 @@ export default class FountainEncoder {
     this.messageLength = message.length;
     this.fragments = FountainEncoder.partitionMessage(message, fragmentLength);
     this.fragmentLength = fragmentLength;
-    this.seqNum = firstSeqNum;
+    this.seqNum = toUint32(firstSeqNum);
     this.checksum = getCRC(message)
   }
+
+  public get fragmentsLength() { return this.fragments.length; }
 
   public isComplete(): boolean {
     return this.seqNum >= this.fragments.length;
@@ -96,13 +97,13 @@ export default class FountainEncoder {
 
   public mix(indexes: number[]) {
     return indexes.reduce(
-      (result, index) => xor(this.fragments[index], result),
+      (result, index) => bufferXOR(this.fragments[index], result),
       Buffer.alloc(this.fragmentLength, 0)
     )
   }
 
   public nextPart(): FountainEncoderPart {
-    this.seqNum += 1;
+    this.seqNum = toUint32(this.seqNum + 1);
 
     const indexes = chooseFragments(this.seqNum, this.fragments.length, this.checksum);
     const mixed = this.mix(indexes);

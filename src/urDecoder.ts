@@ -1,11 +1,9 @@
 import FountainDecoder from './fountainDecoder';
-import cbor from 'cbor';
 import bytewords from './bytewords';
 import assert from 'assert';
-import { hasPrefix, isURType } from './utils';
+import { isURType, toUint32 } from './utils';
 import { InvalidSchemeError, InvalidPathLengthError, InvalidTypeError, InvalidSequenceComponentError } from './errors';
-import { UR } from './ur';
-import BigNumber from 'bignumber.js';
+import UR from './ur';
 import { FountainEncoderPart } from './fountainEncoder';
 
 export default class URDecoder {
@@ -83,7 +81,7 @@ export default class URDecoder {
       throw new InvalidSequenceComponentError();
     }
 
-    const seqNum = Number(components[0]);
+    const seqNum = toUint32(Number(components[0]));
     const seqLength = Number(components[1]);
 
     if (seqNum < 1 || seqLength < 1) {

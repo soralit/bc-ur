@@ -2,6 +2,7 @@
   "compilerOptions": {
     "sourceMap": true,
     "composite": true,
+    "module": "CommonJS",
     "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "./dist",

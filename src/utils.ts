@@ -11,6 +11,8 @@ export const getCRC = (message: Buffer): number => crc32(message);
 
 export const getCRCHex = (message: Buffer): string => crc32(message).toString(16).padStart(8, '0');
 
+export const toUint32 = (number: number): number => number >>> 0;
+
 export const intToBytes = (num: number): Buffer => {
   const arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
   const view = new DataView(arr);
@@ -55,4 +57,15 @@ export const arrayContains = (ar1: any[], ar2: any[]): boolean => {
  */
 export const setDifference = (ar1: any[], ar2: any[]): any[] => {
   return ar1.filter(x => ar2.indexOf(x) < 0)
+}
+
+export const bufferXOR = (a: Buffer, b: Buffer): Buffer => {
+  const length = Math.max(a.length, b.length);
+  const buffer = Buffer.allocUnsafe(length);
+
+  for (let i = 0; i < length; ++i) {
+    buffer[i] = a[i] ^ b[i];
+  }
+
+  return buffer;
 }

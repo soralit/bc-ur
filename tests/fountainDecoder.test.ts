@@ -1,5 +1,5 @@
-import FountainEncoder, { FountainEncoderPart } from "../src/fountainEncoder";
-import FountainDecoder, { FountainDecoderPart } from "../src/fountainDecoder";
+import FountainEncoder from "../src/fountainEncoder";
+import FountainDecoder from "../src/fountainDecoder";
 import { makeMessage } from "./utils";
 
 describe('Fountain Decoder', () => {

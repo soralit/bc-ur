@@ -91,7 +91,4 @@ describe('Fountain Encoder', () => {
 
     expect(cbor).toEqual(cbor2);
   });
-
-
-
 });

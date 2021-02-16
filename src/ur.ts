@@ -1,8 +1,8 @@
-import { type } from "os";
 import { InvalidTypeError } from "./errors";
 import { isURType } from "./utils";
+import { cborEncode, cborDecode } from './cbor';
 
-export class UR {
+export default class UR {
   constructor(
     private _cborPayload: Buffer,
     private _type: string = 'bytes'
@@ -10,6 +10,14 @@ export class UR {
     if (!isURType(this._type)) {
       throw new InvalidTypeError();
     }
+  }
+
+  public static fromBuffer(buf: Buffer) {
+    return new UR(cborEncode(buf));
+  }
+
+  public decodeCBOR(): Buffer {
+    return cborDecode(this._cborPayload);
   }
 
   get type() { return this._type; }

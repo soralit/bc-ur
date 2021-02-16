@@ -1,10 +1,9 @@
-import xor from "buffer-xor";
 import FountainEncoder from "../src/fountainEncoder";
 import { chooseDegree, chooseFragments, shuffle } from "../src/fountainUtils";
-import { getCRC, intToBytes } from "../src/utils";
+import { bufferXOR, getCRC, intToBytes } from "../src/utils";
 import Xoshiro from "../src/xoshiro";
 import { makeMessage } from "./utils";
-const randomSampler = require('alias-sampling');
+const randomSampler = require('@apocentre/alias-sampling');
 
 describe('Xoshiro rng', () => {
   test('1', () => {
@@ -145,11 +144,11 @@ describe('XOR', () => {
     let data3 = Buffer.alloc(data1.length);
 
     data1.copy(data3);
-    data3 = xor(data3, data2)
+    data3 = bufferXOR(data3, data2)
 
     expect(data3.toString('hex')).toEqual('68a367fdf47c8b2888f9')
 
-    data3 = xor(data3, data1);
+    data3 = bufferXOR(data3, data1);
 
     expect(data3.equals(data2)).toBe(true)
   });

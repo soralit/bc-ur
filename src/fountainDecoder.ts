@@ -1,7 +1,4 @@
-import assert from "assert";
-import cbor from 'cbor';
-import xor from 'buffer-xor';
-import { arrayContains, arraysEqual, getCRC, setDifference, split } from "./utils";
+import { arrayContains, arraysEqual, bufferXOR, getCRC, setDifference, split } from "./utils";
 import { chooseFragments } from "./fountainUtils";
 import { FountainEncoderPart } from "./fountainEncoder";
 
@@ -83,7 +80,7 @@ export default class FountainDecoder {
     // If the fragments mixed into `b` are a strict (proper) subset of those in `a`...
     if (arrayContains(a.indexes, b.indexes)) {
       const newIndexes = setDifference(a.indexes, b.indexes);
-      const newFragment = xor(a.fragment, b.fragment);
+      const newFragment = bufferXOR(a.fragment, b.fragment);
 
       return new FountainDecoderPart(newIndexes, newFragment);
     } else {
