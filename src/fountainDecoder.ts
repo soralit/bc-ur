@@ -116,7 +116,6 @@ export default class FountainDecoder {
     this.simpleParts.push({ key: part.indexes, value: part });
     this.receivedPartIndexes.push(fragmentIndex);
 
-
     // If we've received all the parts
     if (arraysEqual(this.receivedPartIndexes, this.expectedPartIndexes)) {
       // Reassemble the message from its fragments
@@ -136,7 +135,6 @@ export default class FountainDecoder {
     else {
       this.reduceMixedBy(part);
     }
-
   }
 
   private processMixedPart(part: FountainDecoderPart): void {
@@ -238,7 +236,20 @@ export default class FountainDecoder {
     }
 
     return Math.min(0.99, this.processedPartsCount / (expectedPartCount * 1.75));
+  }
 
+  public getProgress(): number {
+    if (this.isComplete()) {
+      return 1;
+    }
+
+    const expectedPartCount = this.expectedPartCount();
+
+    if (expectedPartCount === 0) {
+      return 0;
+    }
+
+    return Math.min(0.99, this.receivedPartIndexes.length / expectedPartCount);
   }
 }
 

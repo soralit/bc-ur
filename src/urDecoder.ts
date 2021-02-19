@@ -127,6 +127,7 @@ export default class URDecoder {
     }
 
     if (this.fountainDecoder.isSuccess()) {
+      console.log(`🚀 ~ URDecoder ~ receivePart ~ this.fountainDecoder.resultMessage()`, this.fountainDecoder.resultMessage());
       this.result = new UR(this.fountainDecoder.resultMessage(), type);
     }
     else if (this.fountainDecoder.isFailure()) {
@@ -162,5 +163,9 @@ export default class URDecoder {
 
   public estimatedPercentComplete() {
     return this.fountainDecoder.estimatedPercentComplete();
+  }
+
+  public getProgress() {
+    return this.fountainDecoder.getProgress();
   }
 }
